@@ -1,10 +1,14 @@
 package com.panlei.web.controller;
 
 import com.panlei.web.model.User;
+import com.panlei.web.model.UserNju;
+import com.panlei.web.service.NjuUserService;
 import com.panlei.web.service.UserService;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,12 +24,15 @@ import java.util.Map;
  */
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/bbs")
 public class UserController {
 
     private Logger log = Logger.getLogger(UserController.class);
     @Resource
     private UserService userService;
+
+    @Autowired
+    NjuUserService njuUserService;
 
     @RequestMapping("/showUser")
     public String showUser(HttpServletRequest request, Model model){
@@ -35,7 +42,7 @@ public class UserController {
         return "showUser";
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/listUser", method = RequestMethod.GET)
     @ResponseBody
     public Map showUserList(){
         log.info("查询所有用户信息");
@@ -44,4 +51,14 @@ public class UserController {
         map.put("list", userList);
         return map;
     }
+
+    @RequestMapping(value = "/user/bind",method = RequestMethod.POST)
+    @ResponseBody
+    public String bindUser(@RequestBody UserNju userNju) throws Exception {
+        System.out.print(userNju.getUserName());
+
+
+        return njuUserService.createUser(userNju);
+    }
+
 }
