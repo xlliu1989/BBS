@@ -1,0 +1,115 @@
+<!-- detail -->
+<import src="../../wxParse/wxParse.wxml" />
+
+<page class="page detail">
+  <scroll-view scroll-y="true" scroll-top="{{scrollTop}}" bindscrolltolower="scrolltolower" style="position: absolute; left: 0; top:0; bottom: 0; right: 0;">
+
+  <view class="detail-post">
+
+    <view class="detail-post-title">
+      <view class="detail-posts-tag hot" wx:if="{{detail.top === true}}">置顶</view>
+      <view class="detail-posts-tag" wx:if="{{detail.good === true}}">精华</view>
+      {{ detail[0].thisTitle }}
+    </view>
+  </view>
+  <view class="detail-post-meta">
+    <!-- <view class="detail-post-avatar">
+      <image class="detail-post-avatar-img" mode="scaleToFill" src="/images/userImage/icon1.jpeg" />
+    </view> -->
+    <view class="detail-post-info">
+      <view class="detail-post-author-name">
+        <text>{{ detail[0].thisAuthor }}({{detail[0].thisAuthorNickname}})</text>
+        <!--<view class="detail-type-item"  wx:if="{{detail.tab === 'good'}}">
+          <view class="detail-type-item-font">#精华#</view>
+        </view>
+        <view class="detail-type-item"  wx:if="{{detail.tab === 'share'}}">
+          <view class="detail-type-item-font">#分享#</view>
+        </view>
+        <view class="detail-type-item"  wx:if="{{detail.tab === 'ask'}}">
+          <view class="detail-type-item-font">#问答#</view>
+        </view>
+        <view class="detail-type-item"  wx:if="{{detail.tab === 'job'}}">
+          <view class="detail-type-item-font">#招聘#</view>
+        </view>-->
+      </view>
+      <view class="detail-post-time">楼主 发表于{{ detail[0].thisTime }}</view>
+    </view>
+
+    <!--<view class="detail-collect-item" id="{{detail.id}}" catchtap="collect" wx:if="{{detail.is_collect == true}}">取消收藏</view>
+    <view class="detail-collect-item" id="{{detail.id}}" catchtap="collect" wx:if="{{detail.is_collect == false}}">收藏</view>-->
+
+    <view class="detail-collect-item">
+      <image class="bar-info-item-icon" src="/images/icon/visit.png"></image>
+      <view class="bar-info-item-number">{{detail[0].thisWatchNumber}}</view>
+    </view>
+  </view>
+
+
+  <view class="detail-post-content">
+    <template is="wxParse" data="{{wxParseData:article.nodes}}" />
+    <!--<text class="content-info">{{ detail[0].thisContext }}</text>-->
+  </view>
+
+  <view class="detail-post-comment">
+    <view class="detail-post-comment-title">评论</view>
+    <view class="detail-post-comment-list">
+      <block wx:for="{{ detail }}" index="{{index}}" wx:if="{{index > 0}}">
+        <view class="detail-post-comment-item" index="{{index}}" id="{{item.id}}">
+          <view class="detail-post-comment-avatar">
+            <!--<image class="detail-post-comment-avatar-img" mode="scaleToFill" src="{{ item.author.avatar_url }}"></image>-->
+          </view>
+          <view class="detail-post-comment-cell">
+            <view class="detail-post-comment-info">
+              <view class="detail-post-comment-info-cell">
+                <view class="detail-post-comment-author-name">{{ item.thisAuthor }}({{item.thisAuthorNickname}})</view>
+                <view class="detail-post-comment-time">{{index}}楼 发表于{{ item.thisTime }}</view>
+              </view>
+              <!--<view class="detail-post-comment-info-cell-image" style="text-align:right" id="{{item.id}}" data-index="{{index}}" catchtap="reply">
+                <image class="detail-post-zan" mode="scaleToFill" src="/images/icon/zan.png"></image>
+                <text class="detail-post-zan-num" wx:if="{{item.thisWatchNumber > 0}}">{{item.thisWatchNumber}}</text>
+              </view>-->
+            </view>
+
+            <block wx:for="{{ replyTemArray }}" wx:for-index="jdx" wx:for-item="j">
+              <block wx:if="{{j.length>0}}">
+                <block wx:if="{{index == jdx }}" class="wxParse">
+                  <template is="wxParse" data="{{wxParseData:j}}" />
+                </block>
+              </block>
+            </block>
+
+            <!--<view class="detail-comment-content">
+                  <template is="wxParse" data="{{wxParseData:item}}"/>-->
+            <!--<text class="detail-comment-text">{{ item.thisContext }}</text>-->
+            <!--</view>-->
+          </view>
+        </view>
+      </block>
+
+      <!--<block wx:if="{{detail.replies.length < 0}}">
+        <view class="detail-post-comment-null">
+          <image class="imgnull" mode="scaleToFill" src="/images/icon/null.png"></image>
+          <text class="textnull">暂无收录评论 </text>
+        </view>
+      </block>-->
+
+    </view>
+  </view>
+
+    <view class="com-widget-goTop" bindtap="goTop" wx:if="{{floorstatus}}">
+      <view class="icon-gotop">
+        顶部
+      </view>
+    </view>
+  </scroll-view>
+
+  <loading hidden="{{hidden}}">
+    加载中...
+  </loading>
+
+  <modal title="消息" confirm-text="确认" cancel-text="关闭" hidden="{{modalHidden}}" bindconfirm="confirmChange" bindcancel="cancelChange">
+    您还没未登录conde，是否前往认证登录？
+  </modal>
+
+
+</page>

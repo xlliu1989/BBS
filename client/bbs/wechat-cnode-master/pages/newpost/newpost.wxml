@@ -1,0 +1,41 @@
+<!--pages/newpost/newpost.wxml-->
+<view>
+    <view class="post-title-wrap" >
+        <textarea class="c-fullwidth post-title"  name="textarea1" placeholder="标题，可以不填..." type="textarea"/>
+    </view>
+    <view class="post-mainbody-wrap" >
+        <textarea class="c-fullwidth post-mainbody"  name="textarea1" placeholder="这一刻的想法..." type="textarea"/>
+    </view>
+    <view class="post-submit-container" >
+        <view class="post-position-wrap" bindtap="positionClick">
+            <image class="post-position-icon"  mode="scaleToFill" src="/images/icon/地址图标.png" style="background-size: 100% 100%; background-position: 0% 0%; background-repeat: no-repeat; background-image: url(/images/icon/地址图标.png); "/>
+            <text class="post-position-text" >{{positiontext}}</text>
+        </view>
+        <button class="post-submit"  hover-class="button-hover" size="default" type="default" style="color:#fff;background-color:rgba(23,181,238,1)">
+            发表
+        </button>
+    </view>
+</view>
+<view class="post-icon-container" >
+    <view class="post-icon-emoj-wrap" >
+        <view class="post-icon-emoj"> </view>
+        <text class="post-icon-desc" >表情</text>
+    </view>
+    <view class="post-icon-emoj-wrap" bindtap="imgClick">
+        <view class="post-icon-img"></view>
+        <text class="post-icon-desc" >图片</text>
+    </view>
+    <view class="post-icon-emoj-wrap" bindtap="voiceClick">
+        <view class="post-icon-voice"></view>
+        <text class="post-icon-desc" >语音</text>
+    </view>
+    <view class="post-icon-emoj-wrap" bindtap="videoClick">
+        <view class="post-icon-vedio" ></view>
+        <text class="post-icon-desc" >视频</text>
+    </view>
+    <!--<view class="post-icon-emoj-wrap" >
+        <view class="post-icon-reward"></view>
+        <text class="post-icon-desc" >悬赏</text>
+    </view>-->
+</view>
+
