@@ -16,7 +16,8 @@ Page({
   },
   goTop: function (e) {
     this.setData({
-      scrollTop: 0
+      scrollTop: 0,
+      floorstatus: false
     })
   },
   scroll: function (e, res) {
@@ -55,7 +56,10 @@ Page({
     // WxParse.wxParse('detail', 'html', detail, that, 5);
   },
 
-  onReachBottom: function () {
+  scrolltolower: function () {
+    this.setData({
+      floorstatus: true
+    })
     this.lower();
     console.log('上拉刷新', new Date());
   },

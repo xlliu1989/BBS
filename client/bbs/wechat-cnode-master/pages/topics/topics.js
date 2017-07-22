@@ -44,6 +44,12 @@ Page({
   },
 
   onPullDownRefresh: function () {
+      //   该方法绑定了页面滑动到顶部的事件，然后做上拉刷新
+    this.getData();
+    console.log('下拉刷新', new Date());
+  },
+  // 滑动底部加载
+  refresh: function (event) {
     this.getData();
     console.log('下拉刷新', new Date());
   },
@@ -132,7 +138,7 @@ Page({
       }
       else{
         that.setData({
-          postsList: res.topAll
+          topallList: res.topAll
         })
       }
 
@@ -147,19 +153,7 @@ Page({
     // console.log(postsList);
   },
 
-  // 滑动底部加载
-  lower: function () {
-    // console.log('滑动底部加载', new Date());
-    // var that = this;
-    // that.setData({
-    //   page: that.data.page + 1
-    // });
-    // if (that.data.tab !== 'all') {
-    //   this.getData({ tab: that.data.tab, page: that.data.page });
-    // } else {
-    //   this.getData({ page: that.data.page });
-    // }
-  }
+  
 
 
 })
