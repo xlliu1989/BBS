@@ -6,9 +6,11 @@ import com.panlei.web.dao.UserNjuMapper;
 import com.panlei.web.model.BbsContext;
 import com.panlei.web.model.Top10;
 import com.panlei.web.model.TopAll;
+import com.panlei.web.model.UserInfo;
 import com.panlei.web.service.BbsService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -174,6 +176,28 @@ public class BbsServiceImpl implements BbsService {
             result.put("context", resultList);
             return result;
     }
+
+    public Map getUserInfo(String userId){
+        Map<String, Object> result = new HashMap<String, Object>();
+        Document doc = null;
+
+        try {
+            doc = Jsoup.connect("http://bbs.nju.edu.cn/vd26437/bbsqry?userid=" + userId).get();
+            //String url = "http://bbs.nju.edu.cn/vd26437/bbsqry?userid=" + userId;
+            //doc = Jsoup.parse(new URL(url).openStream(),"GB2312", url);
+        }catch (IOException ex){
+            ex.printStackTrace();
+            System.out.print(ex.getMessage());
+        }
+
+        Element userInfoElement = doc.getElementsByTag("textarea").first();
+        String text = userInfoElement.text();
+        UserInfo userInfo = ConverToModel(text);
+        result.put("userInfo", userInfo);
+
+        return result;
+    }
+
     public void readUrlPicture(String urlString) throws Exception {
         //new一个URL对象
         URL url = new URL(urlString);
@@ -225,7 +249,6 @@ public class BbsServiceImpl implements BbsService {
         return outStream.toByteArray();
     }
 
-
     public Map getTopAll(){
         Map<String, Object> result = new HashMap<String, Object>();
         Document doc = null;
@@ -274,6 +297,114 @@ public class BbsServiceImpl implements BbsService {
         result.put("topAll", resultList);
         return result;
     };
+
+    private UserInfo ConverToModel(String textArea){
+
+        if(textArea == null || textArea.length() == 0){
+            return new UserInfo();
+        }
+
+        UserInfo userInfo = new UserInfo();
+
+        String text = textArea;
+
+        // parse id
+        int idEndIndex = text.indexOf("(");
+        String id = text.substring(0, idEndIndex - 1);
+        userInfo.setId(id);
+
+        // parse name
+        text = text.substring(idEndIndex);
+        int nameAreaEndIndex = text.indexOf("共上站");
+        String nameArea = text.substring(0, nameAreaEndIndex);
+        String name = GetFieldFromText(nameArea, "[33m","[37m");
+        userInfo.setName(name);
+
+        // parse login count
+        text = text.substring(nameAreaEndIndex);
+        int loginCountAreaEndIndex = text.indexOf("发表文章");
+        String loginCountArea = text.substring(0, loginCountAreaEndIndex);
+        String loginCount = GetFieldFromText(loginCountArea, "[32m","[m");
+        userInfo.setLoginCount(loginCount);
+
+        // parse publish count
+        text = text.substring(loginCountAreaEndIndex);
+        int publishCountAreaEndIndex = text.indexOf("篇");
+        String publishCountArea = text.substring(0, publishCountAreaEndIndex);
+        String publishCount = GetFieldFromText(publishCountArea, "[32m","[m");
+        userInfo.setPublishCount(publishCount);
+
+        // parse constellation
+        text = text.substring(publishCountAreaEndIndex);
+        int constellationAreaEndIndex = text.indexOf("上次在");
+        String constellationArea = text.substring(0, constellationAreaEndIndex);
+        String constellation = GetFieldFromText(constellationArea, "m","[m");
+        userInfo.setConstellation(constellation);
+
+        // parse last login time
+        text = text.substring(constellationAreaEndIndex);
+        int lastLoginTimeEndIndex = text.indexOf("从");
+        String lastLoginTimeArea = text.substring(0, lastLoginTimeEndIndex);
+        String lastLoginTime = GetFieldFromText(lastLoginTimeArea, "[32m","[37m");
+        userInfo.setLastLoginTime(lastLoginTime);
+
+        // parse last login ip
+        text = text.substring(lastLoginTimeEndIndex);
+        int lastLoginIpEndIndex = text.indexOf("到本站一游");
+        String lastLoginIpArea = text.substring(0, lastLoginIpEndIndex);
+        String lastLoginIp = GetFieldFromText(lastLoginIpArea, "[32m","[37m");
+        userInfo.setLastLoginIp(lastLoginIp);
+
+        // parse mail
+        text = text.substring(lastLoginIpEndIndex);
+        int mailEndIndex = text.indexOf("经验值");
+        String mailArea = text.substring(0, mailEndIndex);
+        String mail = GetFieldFromText(mailArea, "[32m","[37m");
+        userInfo.setMail(mail);
+
+        // parse experience value, experience title
+        text = text.substring(mailEndIndex);
+        int experienceAreaEndIndex = text.indexOf("表现值");
+        String experienceArea = text.substring(0, experienceAreaEndIndex);
+        String experienceValue = GetFieldFromText(experienceArea, "[32m","[37m");
+        String experienceTitle = GetFieldFromText(experienceArea, "[33m","[37m");
+        userInfo.setExperienceValue(experienceValue);
+        userInfo.setExperienceTitle(experienceTitle);
+
+        // parse behaviour value, behaviour title
+        text = text.substring(experienceAreaEndIndex);
+        int behaviourAreaEndIndex = text.indexOf("生命力");
+        String behaviourArea = text.substring(0, behaviourAreaEndIndex);
+        String behaviourValue = GetFieldFromText(behaviourArea, "[32m","[37m");
+        String behaviourTitle = GetFieldFromText(behaviourArea, "[33m","[37m");
+        userInfo.setBehaviourValue(behaviourValue);
+        userInfo.setBehaviourTitle(behaviourTitle);
+
+        // parse life value
+        text = text.substring(behaviourAreaEndIndex);
+        int lifeAreaEndIndex = text.indexOf("目前");
+        String lifeArea = text.substring(0, lifeAreaEndIndex);
+        String lifeValue = GetFieldFromText(lifeArea, "[32m","[37m");
+        userInfo.setLifeValue(lifeValue);
+
+        return userInfo;
+    }
+
+    private String GetFieldFromText(String text, String beginTag, String endTag){
+        int startIndex = text.indexOf(beginTag);
+
+        if(startIndex < 0){
+            return "";
+        }
+
+        int endIndex = text.substring(startIndex).indexOf(endTag);
+
+        if(endIndex < 0){
+            return "";
+        }
+
+        return text.substring(startIndex).substring(beginTag.length(), endIndex).trim();
+    }
 }
 
 
