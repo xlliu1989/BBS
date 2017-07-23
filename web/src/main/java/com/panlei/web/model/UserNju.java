@@ -7,7 +7,6 @@ public class UserNju {
     private Integer id;
     private String userName;
     private String passwd;
-    private String cookie;
     private String webchatID;
     private String createTime;
 
@@ -33,14 +32,6 @@ public class UserNju {
 
     public void setPasswd(String passwd) {
         this.passwd = passwd;
-    }
-
-    public String getCookie() {
-        return cookie;
-    }
-
-    public void setCookie(String cookie) {
-        this.cookie = cookie;
     }
 
     public String getWebchatID() {
