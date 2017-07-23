@@ -1,0 +1,195 @@
+﻿/*
+
+小百合API：
+整理时间：2017.06.20
+作者：潘磊
+
+*/
+
+
+
+查看十大列表：
+	GET /bbs/top10
+	返回：
+	{
+		"top10": [
+			{
+				"id": "第 1 名",
+				"href": "board=Girls&amp&file=M.1497895724.A",
+				"title": "问题来了：这算不算妈宝男？",
+				"zone": "Girls",
+				"author": "LaughingGor",
+				"number": "26"
+			},
+			{
+				"id": "第 2 名",
+				"href": "board=AutoSpeed&amp&file=M.1497921912.A",
+				"title": "求意见，牧马人值得买么？",
+				"zone": "AutoSpeed",
+				"author": "yun1014",
+				"number": "24"
+			},
+			.....
+		]
+	}
+
+	
+查看{url}的帖子详情列表：
+	POST /bbs/context -d '{"url": "http://bbs.nju.edu.cn/bbstcon?board=M_Logistic&file=M.1495970519.A"}'
+	写一页接口：POST /bbs/context -d '{"url": "http://bbs.nju.edu.cn/bbstcon?board=Pictures&file=M.1499482559.A&start=30"}'
+	返回：
+	{
+		"context": [
+			{
+				"thisAuthor": " ppll",
+				"thisAuthorNickname": "梦回童年",
+				"thisWatchNumber": " 798",
+				"thisZone": "M_Logistic",
+				"thisTitle": " 感谢20舍保洁大叔",
+				"thisTime": "Sun May 28 19:21:59 2017",
+				"thisFloor": "0",
+				"thisContext": "\n\n\r\n本人昨日不慎将校园卡遗落到洗手间，由于不在校园卡中心工作日时间，对个人生活造成\r\n不小的影响与麻烦。惊喜的是经过宿管办公室时发现旁边的黑板上有我的名字，原来校园\r\n卡被人捡到后交到了宿管那里。经宿管阿姨得知捡到我校园卡的是负责20舍保洁工作的李\r\n加金大叔，在此发帖对大叔表示真诚感谢，同时感谢宿管阿姨，我们南大的后勤工作人员\r\n棒棒哒。\n"
+			},
+			{
+				"thisAuthor": " chwf",
+				"thisAuthorNickname": "鼓楼公寓管家",
+				"thisWatchNumber": " 0",
+				"thisZone": "M_Logistic",
+				"thisTitle": " Re: 感谢20舍保洁大叔",
+				"thisTime": "Sun May 28 21:55:22 2017",
+				"thisFloor": "1",
+				"thisContext": "\n\n赞，二十舍保洁李加金好棒。\n"
+			},
+			...
+		]
+	}
+
+
+绑定小百合账号：
+	POST /bbs/user/bind -d '{"userName": "panlei","passwd": "1234", "webchatID": "1"}'
+
+	返回：
+	success
+
+
+查看分区（section）列表：
+	GET /bbs/section
+	返回：
+	{
+		"section": [
+			{
+				"id": 1,
+				"sectionName": "Base_System",
+				"sectionNameCN": "本站系统",
+				"sectionValue": "0",
+				"sectionUrl": "bbsboa?sec=0"
+			},
+			{
+				"id": 2,
+				"sectionName": "Nanjing_University",
+				"sectionNameCN": "南京大学",
+				"sectionValue": "1",
+				"sectionUrl": "bbsboa?sec=1"
+			}
+		]
+	}
+
+查看特定分区的board列表：
+	GET /bbs/section/{number}/board
+	返回：
+	{
+		"board": [
+			{
+				"id": 1,
+				"boardName": "D_Computer",
+				"boardNameCN": "计算机系",
+				"sectionName": "Nanjing_University",
+				"sectionValue": "1",
+				"boardUrl": "bbsdoc?board=D_Computer"
+			}
+		]
+	}
+	
+查看制定board的帖子列表：
+	GET /bbs/section/board/{boardName}/latest    //查看最新的字帖列表
+	GET /bbs/section/board/D_Computer/5765       //查看指定开始位置
+	返回： 
+	{
+		"DockList": [
+			{
+				"number": null,
+				"top": true,
+				"author": "645020400",
+				"createTime": "Dec 10 12:47",
+				"title": "○ 助研费办理重要通知(改为网上办理，务请认真阅读) (963字节)",
+				"replyNumber": null,
+				"url": "board=D_EE&amp&file=M.1323492472.A",
+				"watchNumber": "7412"
+			},
+			{
+				"number": null,
+				"top": true,
+				"author": "DDB",
+				"createTime": "Aug 17 23:35",
+				"title": "○ 推荐个学习编程的好地方 (224字节)",
+				"replyNumber": null,
+				"url": "board=D_EE&amp&file=M.1376753746.A",
+				"watchNumber": "6258"
+			},
+			...
+		]
+	}
+
+查看热门帖子列表：
+	GET /bbs/topall
+	返回：
+	{
+		"topAll": [
+			{
+				"href": "board=S_Chemistry&amp&file=M.1498116041.A",
+				"title": "○忍无可忍，特来发帖 ",
+				"section": null,
+				"board": "S_Chemistry"
+			},
+			{
+				"href": "board=S_Chemistry&amp&file=M.1498119182.A",
+				"title": "○招生啦 ",
+				"section": null,
+				"board": "S_Chemistry"
+			},
+			...
+		]
+	}
+
+
+发帖：
+	POST /bbs/board/{boardName}
+	返回：succex
+	{
+  		  "title":"this is title",
+		  "text":"i am body",
+		  "webchatID":"123456"
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
