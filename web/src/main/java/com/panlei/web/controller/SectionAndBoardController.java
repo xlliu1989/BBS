@@ -1,16 +1,13 @@
 package com.panlei.web.controller;
 
-import com.panlei.web.dao.UserNjuMapper;
 import com.panlei.web.model.Board;
 import com.panlei.web.model.Dock;
-import com.panlei.web.model.UserNju;
 import com.panlei.web.service.BoardService;
 import com.panlei.web.service.SectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +22,9 @@ public class SectionAndBoardController {
 
 //    @Autowired
 //    BoardService boardService;
-    @Resource
-    private UserNjuMapper userNjuMapper;
-
     @Autowired
     BoardService boardService;
+
     @Autowired
     SectionService sectionService;
 
@@ -41,10 +36,9 @@ public class SectionAndBoardController {
 
     @RequestMapping(value = "/board/{boardName}",method = RequestMethod.POST)
     @ResponseBody
-    public Map writePost(@PathVariable("boardName") String boardName, @RequestBody Map<String, String> postData) throws Exception {
+    public Map writePost(@PathVariable("boardName") String boardName, @RequestBody Map<String, String> postText) throws Exception {
         Map<String, Object> result = new HashMap<String, Object>();
-        UserNju userNju= userNjuMapper.selectUserByWebchatId(postData.get("webchatID"));
-        boardService.postWritePost(boardName, postData.get("title"), postData.get("text"), userNju.getCookie());
+        boardService.postWritePost("testtitle","ddody");
 
         return result;
     }

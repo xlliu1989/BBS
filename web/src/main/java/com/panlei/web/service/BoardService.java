@@ -14,5 +14,5 @@ public interface BoardService {
     List<Board> getAllBoards() throws Exception;
     List<Dock> getBoardsByBoardName(String boardName);
     List<Dock> getBoardsByBoardName(String boardName, String numberFrom);
-    void postWritePost(String boardName, String title, String text, String cookie);
+    void postWritePost(String text, String cookie);
 }
