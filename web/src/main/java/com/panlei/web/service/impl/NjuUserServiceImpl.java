@@ -30,9 +30,11 @@ public class NjuUserServiceImpl implements NjuUserService {
 
 
     public String createUser(UserNju userNju)throws Exception {
-        if (loginBBS(userNju.getUserName(), userNju.getPasswd()).equals("failure")){
+        String cookie = loginBBS(userNju.getUserName(), userNju.getPasswd());
+        if (cookie.equals("failure")){
             return "failure";
         }else {
+            userNju.setCookie(cookie);
             userNjuMapper.insert(userNju);
             return "success";
         }
@@ -56,12 +58,11 @@ public class NjuUserServiceImpl implements NjuUserService {
                 int start = CookieString.indexOf("('");
                 int end = CookieString.indexOf("')");
                 CookieString = CookieString.substring(start + 2, end);
-                System.out.println(CookieString);
                 int indexN = CookieString.indexOf("N");
                 int indexP = CookieString.indexOf("+");
-                String u_num = CookieString.substring(0, indexN);
+                int u_num = Integer.parseInt(CookieString.substring(0, indexN)) + 2;
                 String u_id = CookieString.substring(indexN + 1, indexP );
-                String u_key = CookieString.substring(indexP+1);
+                int u_key = Integer.parseInt(CookieString.substring(indexP + 1)) - 2;
                 String footkey = "217872412";
                 sendCookie="_U_NUM=" + u_num + ";_U_UID=" + u_id + ";_U_KEY=" + u_key + ";FOOTKEY=" + footkey;
                 System.out.println(sendCookie);

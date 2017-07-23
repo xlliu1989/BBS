@@ -85,10 +85,4 @@ public class BbsController {
         stream.close();
     }
 
-    @RequestMapping(value = "/userinfo", method = RequestMethod.GET)
-    @ResponseBody
-    public Map getUserInfo(@RequestParam String userId){
-        return bbsService.getUserInfo(userId);
-    }
-
 }
