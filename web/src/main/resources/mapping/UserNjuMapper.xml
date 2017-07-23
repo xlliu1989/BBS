@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.panlei.web.dao.UserNjuMapper" >
-
-    <resultMap id="UserNjuMap" type="com.panlei.web.model.UserNju" >
+    <resultMap id="BaseResultMap" type="com.panlei.web.model.UserNju" >
         <id column="id" property="id" jdbcType="INTEGER" />
-        <result column="username" property="userName" jdbcType="VARCHAR" />
+        <result column="userName" property="username" jdbcType="VARCHAR" />
         <result column="passwd" property="passwd" jdbcType="VARCHAR" />
-        <result column="cookie" property="cookie" jdbcType="VARCHAR" />
-        <result column="webchat_id" property="webchatID" jdbcType="VARCHAR" />
-        <result property="create_time" column="createTime" jdbcType="DATE" />
+        <result column="webchatID" property="webchat_id" jdbcType="VARCHAR" />
+        <result property="createTime" column="create_time" jdbcType="DATE" />
     </resultMap>
 
     <sql id="tableName">
@@ -16,7 +14,7 @@
     </sql>
 
     <sql id="fields">
-        id, username, passwd, cookie, webchat_id, create_time
+        id, username, passwd, webchat_id, create_time
     </sql>
 
     <insert id="insert" parameterType="com.panlei.web.model.UserNju" >
@@ -25,21 +23,10 @@
         (
         <include refid="fields"/>
         ) values
-        (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{passwd,jdbcType=VARCHAR}, #{cookie,jdbcType=VARCHAR},
+        (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{passwd,jdbcType=VARCHAR},
         #{webchatID,jdbcType=VARCHAR}, now())
     </insert>
-
-    <select id="selectUserByWebchatId" resultMap="UserNjuMap">
-        SELECT
-        <include refid="fields"/>
-        FROM
-        <include refid="tableName"/>
-        WHERE
-        webchat_id = #{webchatID}
-    </select>
-
-
     <sql id="Base_Column_List" >
-        id, username, passwd, cookie, webchat_id
+        id, username, passwd, webchat_id
     </sql>
 </mapper>
