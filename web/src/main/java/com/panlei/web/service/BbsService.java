@@ -9,4 +9,5 @@ public interface BbsService {
     Map getTop10();
     Map getBbsContext(String url) throws Exception;
     Map getTopAll();
+    Map getUserInfo(String userId);
 }
