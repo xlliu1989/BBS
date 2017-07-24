@@ -38,7 +38,6 @@
         webchat_id = #{webchatID}
     </select>
 
-
     <sql id="Base_Column_List" >
         id, username, passwd, cookie, webchat_id
     </sql>

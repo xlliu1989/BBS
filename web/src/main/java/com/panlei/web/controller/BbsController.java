@@ -87,8 +87,13 @@ public class BbsController {
 
     @RequestMapping(value = "/userinfo", method = RequestMethod.GET)
     @ResponseBody
-    public Map getUserInfo(@RequestParam String userId){
-        return bbsService.getUserInfo(userId);
+    public Map getUserInfo(@RequestParam String userid){
+        return bbsService.getUserInfo(userid);
     }
 
+    @RequestMapping(value = "/userinfo/wx", method = RequestMethod.GET)
+    @ResponseBody
+    public Map getUserInfoByWxId(@RequestParam String wxid){
+        return bbsService.getUserInfoByWxId(wxid);
+    }
 }

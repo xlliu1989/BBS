@@ -3,10 +3,7 @@ package com.panlei.web.service.impl;
 
 import com.panlei.web.dao.BoardMapper;
 import com.panlei.web.dao.UserNjuMapper;
-import com.panlei.web.model.BbsContext;
-import com.panlei.web.model.Top10;
-import com.panlei.web.model.TopAll;
-import com.panlei.web.model.UserInfo;
+import com.panlei.web.model.*;
 import com.panlei.web.service.BbsService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,6 +25,7 @@ import java.util.regex.Pattern;
 @Service("bbsService")
 public class BbsServiceImpl implements BbsService {
 
+    @Autowired
     private UserNjuMapper userNjuMapper;
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
@@ -196,6 +194,17 @@ public class BbsServiceImpl implements BbsService {
         result.put("userInfo", userInfo);
 
         return result;
+    }
+
+    public Map getUserInfoByWxId(String wxId){
+        UserNju user = userNjuMapper.selectUserByWebchatId(wxId);
+        if(user != null){
+            Map map = getUserInfo(user.getUserName());
+            map.put("wxId", wxId);
+            return map;
+        }
+
+        return null;
     }
 
     public void readUrlPicture(String urlString) throws Exception {

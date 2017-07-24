@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 小百合API：
 整理时间：2017.06.20
@@ -172,6 +172,52 @@
 	}
 
 
+查看个人信息
+
+通过小百合账号 GET /bbs/userinfo?userid={id}
+            返回 Successs
+		{
+    		"userInfo": {
+        		"id": "athome",
+        		"name": "LETITBE",
+        		"loginCount": "2262",
+        		"publishCount": "32",
+        		"constellation": "射手座",
+        		"lastLoginTime": "Sun Jul 23 15:46:41 2017",
+        		"lastLoginIp": "183.206.165.67",
+        		"mail": "",
+        		"experienceValue": "3965",
+        		"experienceTitle": "上尉",
+        		"behaviourValue": "7",
+        		"behaviourTitle": "努力中",
+        		"lifeValue": "671",
+        		"currentStatus": null,
+        		"selfDocument": null
+    			}
+		}
+
+通过微信名账号 GET /bbs/userinfo／wx?wxid={id}
+	返回 Success
+		{
+    		"userInfo": {
+        		"id": "Jeson",
+        		"name": "Jeson",
+        		"loginCount": "2282",
+        		"publishCount": "179",
+        		"constellation": "双子座",
+        		"lastLoginTime": "Sun Jul 23 16:45:11 2017",
+        		"lastLoginIp": "183.206.165.67",
+        		"mail": "",
+        		"experienceValue": "2047",
+        		"experienceTitle": "老站友",
+        		"behaviourValue": "22",
+        		"behaviourTitle": "还不错",
+        		"lifeValue": "398",
+        		"currentStatus": null,
+        		"selfDocument": null
+    			},
+    		"wxId": "1"
+	}
 
 
 
