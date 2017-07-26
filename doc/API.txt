@@ -177,7 +177,9 @@
 	返回：如果绑定了返回：小百合用户名如：jeson
 		如果没有绑定返回：0
 
-
+解绑小百合账号：
+	POST /bbs/user/bind/delete -d '{"webchatID": "1"}'
+	返回：success
 
 
 
