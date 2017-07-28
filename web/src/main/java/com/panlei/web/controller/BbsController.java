@@ -90,5 +90,11 @@ public class BbsController {
     public Map getUserInfo(@RequestParam String userId){
         return bbsService.getUserInfo(userId);
     }
+    
+    @RequestMapping(value = "/user/info", method = RequestMethod.POST)
+    @ResponseBody
+    public Map getUserInfo(@RequestBody Map<String, String> userId){
+        return bbsService.getUserInfo(userId.get("ID"));
+    }
 
 }
