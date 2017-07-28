@@ -164,6 +164,10 @@ public class BbsServiceImpl implements BbsService {
                                 context = context.replace(imageString, imageStringNew);
                             }
                         }
+                        context = context.replace("\r\n\r\n", "\n");
+                        context = context.replace("\r\n", "");
+                        context = context.replace("\n", "\r\n\r\n");
+                        context= context.substring(8);
                         bbsContext.setThisContext("<p>"+context+"</p>");
 
                         int startTitle = text.indexOf("标  题:");
