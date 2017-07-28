@@ -180,6 +180,31 @@
 解绑小百合账号：
 	POST /bbs/user/bind/delete -d '{"webchatID": "1"}'
 	返回：success
+	
+获取用户信息：
+	POST /bbs/user/info -d '{"webchatID": "JESON"}'
+	return:
+		bucunzai:0
+		cunzai:
+		{
+		    "userInfo": {
+			"id": "Jeson",
+			"name": "Jeson",
+			"loginCount": "2284",
+			"publishCount": "179",
+			"constellation": "双子座",
+			"lastLoginTime": "Wed Jul 26 16:08:21 2017",
+			"lastLoginIp": "118.89.159.154",
+			"mail": "",
+			"experienceValue": "2052",
+			"experienceTitle": "老站友",
+			"behaviourValue": "22",
+			"behaviourTitle": "还不错",
+			"lifeValue": "397",
+			"currentStatus": null,
+			"selfDocument": null
+		    }
+		}
 
 
 
