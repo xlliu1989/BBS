@@ -75,4 +75,16 @@ public class NjuUserServiceImpl implements NjuUserService {
         }
         return sendCookie;
     }
+    public String getUserBind(UserNju userNju) throws Exception{
+        UserNju userNjuReturn = userNjuMapper.selectUserByWebchatId(userNju.getWebchatID());
+        if (userNjuReturn != null && userNjuReturn.getUserName() != null){
+            return userNjuReturn.getUserName();
+        }else {
+            return "0";
+        }
+    }
+    public String deleteUserBind(UserNju userNju) throws Exception{
+        userNjuMapper.deleteUserByWebchatId(userNju.getWebchatID());
+        return "succes";
+    }
 }
