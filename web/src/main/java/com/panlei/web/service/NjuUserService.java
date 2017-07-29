@@ -7,4 +7,6 @@ import com.panlei.web.model.UserNju;
  */
 public interface NjuUserService {
     String createUser(UserNju userNju) throws Exception;
+    String getUserBind(UserNju userNju) throws Exception;
+    String deleteUserBind(UserNju userNju) throws Exception;
 }

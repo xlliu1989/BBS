@@ -61,4 +61,19 @@ public class UserController {
         return njuUserService.createUser(userNju);
     }
 
+
+    @RequestMapping(value = "/user/bind/get",method = RequestMethod.POST)
+    @ResponseBody
+    public String getUserBind(@RequestBody UserNju userNju) throws Exception {
+
+        return njuUserService.getUserBind(userNju);
+    }
+
+    @RequestMapping(value = "/user/bind/delete",method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteUserBind(@RequestBody UserNju userNju) throws Exception {
+
+        return njuUserService.deleteUserBind(userNju);
+    }
+
 }

@@ -12,4 +12,5 @@ public interface UserNjuMapper {
     int insert(UserNju userNju);
 
     UserNju selectUserByWebchatId(@Param("webchatID") String webchatId);
+    int deleteUserByWebchatId(@Param("webchatID") String webchatId);
 }
