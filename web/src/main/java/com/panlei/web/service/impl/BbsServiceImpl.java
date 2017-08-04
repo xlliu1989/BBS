@@ -92,93 +92,158 @@ public class BbsServiceImpl implements BbsService {
     }
 
     public Map getBbsContext(String url) throws Exception {
-            Map<String, Object> result = new HashMap<String, Object>();
-            Document doc = null;
-            try {
-                doc = Jsoup.connect(url).timeout(5000).get();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Elements trs = doc.select("table");
-            List resultList = new ArrayList<BbsContext>();
-            for (int i = 0; i < trs.size(); i++) {
-                Elements tds = trs.get(i).select("td");
+        Map<String, Object> result = new HashMap<String, Object>();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(url).timeout(5000).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Elements trs = doc.select("table");
+        List resultList = new ArrayList<BbsContext>();
+        for (int i = 0; i < trs.size(); i++) {
+            Elements tds = trs.get(i).select("td");
 
-                BbsContext bbsContext = new BbsContext();
-                for (int j = 0; j < tds.size(); j++) {
+            BbsContext bbsContext = new BbsContext();
+            for (int j = 0; j < tds.size(); j++) {
 
-                    String text = tds.get(j).text();
+                String text = tds.get(j).text();
 
-                    if (j == 0) {
-                        Integer start = text.indexOf(":");
-                        Integer end = text.indexOf("]", start);
-                        bbsContext.setThisAuthor(text.substring(start + 1, end));
-                        int WatchNumberStart = text.lastIndexOf(":");
-                        bbsContext.setThisWatchNumber(text.substring(WatchNumberStart + 1, text.length() - 1));
-                    }
-
-                    System.out.println("#" + i + "#" + j);
-                    System.out.println(text);
-                    if (j == 1) {
-                        bbsContext.setThisFloor(text);
-                    }
-                    if (j == 2) {
-                        int start = text.indexOf(bbsContext.getThisAuthor());
-                        int end = text.indexOf(")", start);
-                        bbsContext.setThisAuthorNickname(text.substring(start + bbsContext.getThisAuthor().length() + 2, end));
-
-                        int startZone = text.indexOf("信区: ");
-                        int endZone = text.indexOf("\n", startZone);
-                        bbsContext.setThisZone(text.substring(startZone + 4, endZone));
-
-
-                        int startTime = text.indexOf("南京大学小百合站");
-                        int startTime1 = text.indexOf("(", startTime);
-                        int endTime = text.indexOf(")", startTime1);
-                        bbsContext.setThisTime(text.substring(startTime1 + 1, endTime));
-
-                        int endContext = 0;
-                        if (text.indexOf("--") == -1){
-                            endContext = text.indexOf("※");
-                        }else {
-                            endContext = text.indexOf("--");
-                        }
-
-                        String context = text.substring(endTime + 1, endContext);
-                        while (context.indexOf("http://bbs.nju.edu.cn/file/Pictures/") > -1){
-
-                            int imageStart = context.indexOf("http://bbs.nju.edu.cn/file/Pictures/");
-                            if (imageStart > 0){
-                                int imageEnd = context.indexOf("\r\n",imageStart);
-                                if (imageEnd == -1){
-                                    imageEnd = context.indexOf("\n",imageStart);
-                                }
-                                String imageString = context.substring(imageStart, imageEnd);
-                                readUrlPicture(imageString);
-                                //imageString = "https://78560817.bbsnju.cn/ssm/bbs/file/BeautyGirl";
-                                String imageStringNew = "</p><p><img src=\"" + "https://78560817.bbsnju.cn/ssm/bbs/file/"
-                                        + imageString.substring(imageString.lastIndexOf("/")+1)+ "\" ></p><p>";
-                                //<img src="http://bbs.nju.edu.cn/file/Pictures/LilyDroid0605102511.jpg" >
-                                context = context.replace(imageString, imageStringNew);
-                            }
-                        }
-                        context = context.replace("\r\n\r\n", "\n");
-                        context = context.replace("\r\n", "");
-                        context = context.replace("\n", "\r\n\r\n");
-                        context= context.substring(8);
-                        bbsContext.setThisContext("<p>"+context+"</p>");
-
-                        int startTitle = text.indexOf("标  题:");
-                        int endTitle = text.indexOf("\n", startTitle);
-                        bbsContext.setThisTitle(text.substring(startTitle + 5, endTitle));
-                    }
+                if (j == 0) {
+                    Integer start = text.indexOf(":");
+                    Integer end = text.indexOf("]", start);
+                    bbsContext.setThisAuthor(text.substring(start + 2, end));
+                    int WatchNumberStart = text.lastIndexOf(":");
+                    bbsContext.setThisWatchNumber(text.substring(WatchNumberStart + 1, text.length() - 1));
                 }
-                resultList.add(bbsContext);
+
+                System.out.println("#" + i + "#" + j);
+                System.out.println(text);
+                if (j == 1) {
+                    bbsContext.setThisFloor(text);
+                }
+                if (j == 2) {
+                    int start = text.indexOf(bbsContext.getThisAuthor());
+                    int end = text.indexOf(")", start);
+                    bbsContext.setThisAuthorNickname(text.substring(start + bbsContext.getThisAuthor().length() + 2, end));
+
+                    int startZone = text.indexOf("信区: ");
+                    int endZone = text.indexOf("\n", startZone);
+                    bbsContext.setThisZone(text.substring(startZone + 4, endZone));
+
+
+                    int startTime = text.indexOf("南京大学小百合站");
+                    int startTime1 = text.indexOf("(", startTime);
+                    int endTime = text.indexOf(")", startTime1);
+                    bbsContext.setThisTime(text.substring(startTime1 + 1, endTime));
+
+                    int endContext = 0;
+                    if (text.indexOf("--") == -1){
+                        endContext = text.indexOf("※");
+                    }else {
+                        endContext = text.indexOf("--");
+                    }
+
+                    String context = text.substring(endTime + 1, endContext);
+                    while (context.indexOf("http://bbs.nju.edu.cn/file/Pictures/") > -1){
+
+                        int imageStart = context.indexOf("http://bbs.nju.edu.cn/file/Pictures/");
+                        if (imageStart > 0){
+                            int imageEnd = context.indexOf("\r\n",imageStart);
+                            if (imageEnd == -1){
+                                imageEnd = context.indexOf("\n",imageStart);
+                            }
+                            String imageString = context.substring(imageStart, imageEnd);
+                            readUrlPicture(imageString);
+                            //imageString = "https://78560817.bbsnju.cn/ssm/bbs/file/BeautyGirl";
+                            String imageStringNew = "</p><p><img src=\"" + "https://78560817.bbsnju.cn/ssm/bbs/file/"
+                                    + imageString.substring(imageString.lastIndexOf("/")+1)+ "\" ></p><p>";
+                            //<img src="http://bbs.nju.edu.cn/file/Pictures/LilyDroid0605102511.jpg" >
+                            context = context.replace(imageString, imageStringNew);
+                        }
+                    }
+                    context= context.substring(2);
+                    context = handleContext(context);
+//                        context = context.replace("\r\n\r\n", "\n");
+//                        context = context.replace("\r\n", "");
+//                        context = context.replace("\n", "\r\n\r\n");
+
+                    bbsContext.setThisContext("<p>"+context+"</p>");
+
+                    int startTitle = text.indexOf("标  题:");
+                    int endTitle = text.indexOf("\n", startTitle);
+                    bbsContext.setThisTitle(text.substring(startTitle + 5, endTitle));
+                }
             }
-            result.put("context", resultList);
-            return result;
+            resultList.add(bbsContext);
+        }
+        result.put("context", resultList);
+        return result;
     }
 
+    public String handleContext(String context){
+        String N = "\n";
+        String RN = "\r\n";
+        int subInt ;
+        String nextString = null;
+        if (context.indexOf(RN) == 0 ){
+            nextString = RN;
+            subInt = 4;
+        }else {
+            nextString = N;
+            subInt = 2;
+        }
+        int indexStart = 0;
+        int indexRN = context.indexOf(nextString, indexStart);
+        boolean nextFlag = true;
+
+        while (nextFlag){
+            indexStart = indexRN + subInt;
+            if (indexStart == context.length() || indexStart > context.length() || indexRN == -1){
+                //判断是否是结尾
+                nextFlag = false;
+            }else {
+                //不是结尾，去掉\n
+                context = context.substring(0, indexRN) + context.substring(indexRN + subInt);
+                indexRN = context.indexOf(nextString, indexStart);
+            }
+
+        }
+
+
+//
+//        int startRN = context.indexOf("\r\n");
+//        int nextRN = context.indexOf("\r\n", startRN + 4);
+//        while (true){
+//            if (nextRN - startRN > 35){
+//                //自然换行，去掉\r\n
+//                if (nextRN + 4 > context.length()){
+//
+//                    //大于35，但是是最后一行
+//                    context = context.substring(0, nextRN) + context.substring(context.length());
+//                    break;
+//                }else {
+//                    //删除本行末尾\r\n
+//                    context = context.substring(0, nextRN) + context.substring(nextRN + 4);
+//                }
+//                //后移至下一行
+//                startRN = nextRN;
+//                nextRN = context.indexOf("\r\n", startRN);
+//                if (startRN -nextRN <36){
+//                    //自然段真正的结束
+//                    startRN  = nextRN + 4;
+//                    nextRN  = context.indexOf("\r\n", startRN);
+//                    continue;
+//                }
+//                if (nextRN +5 == context.length()){
+//                    break;
+//                }
+//            }else {
+//                break;
+//            }
+//        }
+        return context;
+    }
     public Map getUserInfo(String userId){
         Map<String, Object> result = new HashMap<String, Object>();
         Document doc = null;
@@ -286,8 +351,9 @@ public class BbsServiceImpl implements BbsService {
                 //System.out.println(j + ">"+text);
                 if (text.length() > 0){
                     TopAll topAll = new TopAll();
-                    topAll.setTitle(text.split("\\[")[0]);
-                    topAll.setBoard(text.split("\\[")[1].split("\\]")[0]);
+                    int startBoard = text.lastIndexOf("[");
+                    topAll.setTitle(text.substring(0, startBoard));
+                    topAll.setBoard(text.substring(startBoard));
 
 
                     String href = null;
