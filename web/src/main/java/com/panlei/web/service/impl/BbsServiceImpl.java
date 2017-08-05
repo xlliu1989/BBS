@@ -162,7 +162,7 @@ public class BbsServiceImpl implements BbsService {
                             context = context.replace(imageString, imageStringNew);
                         }
                     }
-                    context= context.substring(2);
+                    //context= context.substring(2);
                     context = handleContext(context);
 //                        context = context.replace("\r\n\r\n", "\n");
 //                        context = context.replace("\r\n", "");
@@ -183,21 +183,28 @@ public class BbsServiceImpl implements BbsService {
 
     public String handleContext(String context){
         String N = "\n";
-        String RN = "\r\n";
+        //String RN = "\r\n";
         int subInt ;
         String nextString = null;
-        if (context.indexOf(RN) == 0 ){
-            nextString = RN;
-            subInt = 4;
-        }else {
+      //
+
             nextString = N;
             subInt = 2;
-        }
+
         int indexStart = 0;
         int indexRN = context.indexOf(nextString, indexStart);
         boolean nextFlag = true;
 
         while (nextFlag){
+            if (indexRN - indexStart < 36){
+                indexStart = indexRN + subInt;
+                indexRN = context.indexOf(nextString, indexStart);
+                if (indexStart == context.length() || indexStart > context.length() || indexRN == -1){
+                    //判断是否是结尾
+                    nextFlag = false;
+                }
+                continue;
+            }
             indexStart = indexRN + subInt;
             if (indexStart == context.length() || indexStart > context.length() || indexRN == -1){
                 //判断是否是结尾
@@ -209,39 +216,7 @@ public class BbsServiceImpl implements BbsService {
             }
 
         }
-
-
-//
-//        int startRN = context.indexOf("\r\n");
-//        int nextRN = context.indexOf("\r\n", startRN + 4);
-//        while (true){
-//            if (nextRN - startRN > 35){
-//                //自然换行，去掉\r\n
-//                if (nextRN + 4 > context.length()){
-//
-//                    //大于35，但是是最后一行
-//                    context = context.substring(0, nextRN) + context.substring(context.length());
-//                    break;
-//                }else {
-//                    //删除本行末尾\r\n
-//                    context = context.substring(0, nextRN) + context.substring(nextRN + 4);
-//                }
-//                //后移至下一行
-//                startRN = nextRN;
-//                nextRN = context.indexOf("\r\n", startRN);
-//                if (startRN -nextRN <36){
-//                    //自然段真正的结束
-//                    startRN  = nextRN + 4;
-//                    nextRN  = context.indexOf("\r\n", startRN);
-//                    continue;
-//                }
-//                if (nextRN +5 == context.length()){
-//                    break;
-//                }
-//            }else {
-//                break;
-//            }
-//        }
+        context = context.replace("\r", "");
         return context;
     }
     public Map getUserInfo(String userId){
