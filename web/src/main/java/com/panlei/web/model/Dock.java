@@ -12,7 +12,17 @@ public class Dock {
     private String title;
     private String replyNumber;
     private String  WatchNumber;
+    private     String  upvoteNumber;
     private String url;
+
+
+    public String getUpvoteNumber() {
+        return upvoteNumber;
+    }
+
+    public void setUpvoteNumber(String upvoteNumber) {
+        this.upvoteNumber = upvoteNumber;
+    }
 
     public String getNumber() {
         return number;

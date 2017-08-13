@@ -1,6 +1,7 @@
 package com.panlei.web.service.impl;
 
 import com.panlei.web.dao.BoardMapper;
+import com.panlei.web.dao.UpvoteMapper;
 import com.panlei.web.model.Board;
 import com.panlei.web.model.Dock;
 import com.panlei.web.service.BoardService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,11 +26,18 @@ import java.util.regex.Pattern;
 public class BoardServiceImpl implements BoardService {
 
     private BoardMapper boardMapper;
+    private UpvoteMapper upvoteMapper;
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     public void setBoardMapper(BoardMapper boardMapper){
         this.boardMapper = boardMapper;
+    }
+
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Autowired
+    public void setUpvoteMapper(UpvoteMapper upvoteMapper){
+        this.upvoteMapper = upvoteMapper;
     }
 
     public List<Board> getBoardsBySectionValue(String value) throws Exception{
@@ -110,6 +119,7 @@ public class BoardServiceImpl implements BoardService {
             resultList.add(dock);
 
         }
+        Collections.reverse(resultList);
 
         System.out.print(resultList);
         return resultList;
@@ -187,11 +197,18 @@ public class BoardServiceImpl implements BoardService {
                         break;
                 }
                 //System.out.println(text);
+
             }
+            if (dock.getTop() == true){
+                continue;
+            }
+            dock.setUpvoteNumber(String.valueOf(upvoteMapper.selectUpvoteByTopicID(dock.getUrl()).size()));
+
             resultList.add(dock);
 
         }
 
+        Collections.reverse(resultList);
         System.out.print(resultList);
         return resultList;
     }

@@ -1,5 +1,7 @@
 package com.panlei.web.service;
 
+import com.panlei.web.model.Upvote;
+
 import java.util.Map;
 
 /**
@@ -7,8 +9,10 @@ import java.util.Map;
  */
 public interface BbsService {
     Map getTop10();
-    Map getBbsContext(String url) throws Exception;
+    Map getBbsContext(String url, String webchatID) throws Exception;
     Map getTopAll();
+    Map getTopAllByNumber(String number);
     Map getUserInfo(String userId);
     Map getUserInfoByWxId(String wxId);
+    Map addUpvote(Upvote upvoteRequest);
 }

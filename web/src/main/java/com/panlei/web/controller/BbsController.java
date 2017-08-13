@@ -1,6 +1,7 @@
 package com.panlei.web.controller;
 
 
+import com.panlei.web.model.Upvote;
 import com.panlei.web.service.BbsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,13 +37,19 @@ public class BbsController {
     @ResponseBody
     public Map getBbsContext(@RequestBody Map<String, String> requestUrl) throws Exception {
         System.out.print(requestUrl.values());
-        return bbsService.getBbsContext(requestUrl.get("url"));
+        return bbsService.getBbsContext(requestUrl.get("url"), requestUrl.get("webchatID"));
     }
 
     @RequestMapping(value = "/topall", method = RequestMethod.GET)
     @ResponseBody
     public Map getTopAll() {
         return bbsService.getTopAll();
+    }
+
+    @RequestMapping(value = "/topall/{number}", method = RequestMethod.GET)
+    @ResponseBody
+    public Map getTopAll(@PathVariable String number) {
+        return bbsService.getTopAllByNumber(number);
     }
 
     @RequestMapping("/file/{cateogry.rp}")
@@ -102,4 +109,12 @@ public class BbsController {
     public Map getUserInfoByWxId(@RequestParam String wxid){
         return bbsService.getUserInfoByWxId(wxid);
     }
+
+    @RequestMapping(value = "/upvote/do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map upvoteAdd(@RequestBody Upvote upvoteRequest){
+        return bbsService.addUpvote(upvoteRequest);
+    }
+
+
 }

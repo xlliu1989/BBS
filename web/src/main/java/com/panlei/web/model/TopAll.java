@@ -5,10 +5,47 @@ package com.panlei.web.model;
  */
 public class TopAll {
 
+    Integer id;
     String  href ;
     String  title ;
     String  section;
     String  board;
+    String  author;
+    String  replyNumber;
+    String  upvoteNumber;
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getReplyNumber() {
+        return replyNumber;
+    }
+
+    public void setReplyNumber(String replyNumber) {
+        this.replyNumber = replyNumber;
+    }
+
+    public String getUpvoteNumber() {
+        return upvoteNumber;
+    }
+
+    public void setUpvoteNumber(String upvoteNumber) {
+        this.upvoteNumber = upvoteNumber;
+    }
 
     public String getHref() {
         return href;
