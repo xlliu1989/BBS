@@ -11,7 +11,26 @@ public class BbsContext {
     String thisTitle;
     String thisTime;
     String thisFloor;
+    String thisFloorUpvoteNumber;
+    String thisFloorUpvoteIsMe;
     String thisContext;
+
+
+    public String getThisFloorUpvoteIsMe() {
+        return thisFloorUpvoteIsMe;
+    }
+
+    public void setThisFloorUpvoteIsMe(String thisFloorUpvoteIsMe) {
+        this.thisFloorUpvoteIsMe = thisFloorUpvoteIsMe;
+    }
+
+    public String getThisFloorUpvoteNumber() {
+        return thisFloorUpvoteNumber;
+    }
+
+    public void setThisFloorUpvoteNumber(String thisFloorUpvoteNumber) {
+        this.thisFloorUpvoteNumber = thisFloorUpvoteNumber;
+    }
 
     public String getThisContext() {
         return thisContext;

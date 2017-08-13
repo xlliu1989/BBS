@@ -10,6 +10,15 @@ public class Top10 {
     String  zone;
     String  author;
     String  number;
+    String  upvoteNumber;
+
+    public String getUpvoteNumber() {
+        return upvoteNumber;
+    }
+
+    public void setUpvoteNumber(String upvoteNumber) {
+        this.upvoteNumber = upvoteNumber;
+    }
 
     public String getId() {
         return id;

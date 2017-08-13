@@ -2,6 +2,7 @@ package com.panlei.web.service.impl;
 
 
 import com.panlei.web.dao.BoardMapper;
+import com.panlei.web.dao.UpvoteMapper;
 import com.panlei.web.dao.UserNjuMapper;
 import com.panlei.web.model.*;
 import com.panlei.web.service.BbsService;
@@ -27,6 +28,9 @@ public class BbsServiceImpl implements BbsService {
 
     @Autowired
     private UserNjuMapper userNjuMapper;
+
+    @Autowired
+    private UpvoteMapper upvoteMapper;
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -84,6 +88,7 @@ public class BbsServiceImpl implements BbsService {
                 }
                 System.out.println(text);
             }
+            top10.setUpvoteNumber(String.valueOf(upvoteMapper.selectUpvoteByTopicID(top10.getHref()).size()));
             resultList.add(top10);
 
         }
@@ -91,8 +96,10 @@ public class BbsServiceImpl implements BbsService {
         return result;
     }
 
-    public Map getBbsContext(String url) throws Exception {
+    public Map getBbsContext(String url, String wetbchatID) throws Exception {
         Map<String, Object> result = new HashMap<String, Object>();
+        List<Upvote> upvoteReturn = upvoteMapper.selectUpvoteByTopicID(url);
+        url = "http://bbs.nju.edu.cn/bbstcon?" + url;
         Document doc = null;
         try {
             doc = Jsoup.connect(url).timeout(5000).get();
@@ -145,9 +152,9 @@ public class BbsServiceImpl implements BbsService {
                     }
 
                     String context = text.substring(endTime + 1, endContext);
-                    while (context.indexOf("http://bbs.nju.edu.cn/file/Pictures/") > -1){
+                    while (context.indexOf("http://bbs.nju.edu.cn/file/") > -1){
 
-                        int imageStart = context.indexOf("http://bbs.nju.edu.cn/file/Pictures/");
+                        int imageStart = context.indexOf("http://bbs.nju.edu.cn/file/");
                         if (imageStart > 0){
                             int imageEnd = context.indexOf("\r\n",imageStart);
                             if (imageEnd == -1){
@@ -163,7 +170,7 @@ public class BbsServiceImpl implements BbsService {
                         }
                     }
                     //context= context.substring(2);
-                    context = handleContext(context);
+                    context = handleContextNewline(context);
 //                        context = context.replace("\r\n\r\n", "\n");
 //                        context = context.replace("\r\n", "");
 //                        context = context.replace("\n", "\r\n\r\n");
@@ -175,13 +182,57 @@ public class BbsServiceImpl implements BbsService {
                     bbsContext.setThisTitle(text.substring(startTitle + 5, endTitle));
                 }
             }
+            if (!upvoteReturn.isEmpty()){
+                Map<String, String> thisFloorUpvote = new HashMap<String, String>();
+                thisFloorUpvote = handleContextUpvoteByFloorID(upvoteReturn, bbsContext.getThisFloor(), wetbchatID);
+                bbsContext.setThisFloorUpvoteNumber(thisFloorUpvote.get("number"));
+                bbsContext.setThisFloorUpvoteIsMe(thisFloorUpvote.get("thisFloorUpvoteIsMe"));
+            }else {
+                bbsContext.setThisFloorUpvoteNumber("0");
+            }
             resultList.add(bbsContext);
         }
         result.put("context", resultList);
         return result;
     }
 
-    public String handleContext(String context){
+//    public String handleHref(String context){
+//        int indexStart = 0;
+//        while (context.indexOf("http://", indexStart) > -1 || context.indexOf("https://", indexStart) > -1){
+//            if (context.indexOf("http://bbs.nju.edu.cn/file/", indexStart) >-1){
+//                indexStart = context.indexOf("http://bbs.nju.edu.cn/file/")+4;
+//                continue;
+//            }
+//
+//            int start = context.indexOf("http://", indexStart);
+//            int end = context.indexOf("\n", start);
+//            String href = context.substring(start, end);
+//            context.replace()
+//
+//
+//        }
+//    }
+
+    public Map<String, String> handleContextUpvoteByFloorID(List<Upvote> listUpvote, String floorID, String webcahtID){
+        Map<String, String> result = new HashMap<String, String>();
+        Integer number = 0;
+        String isMe = "0";
+        for(int i = 0; i < listUpvote.size(); i++){
+            Upvote upvote = listUpvote.get(i);
+            if (floorID.equals(upvote.getFloorID())) {
+                if (webcahtID.equals(upvote.getWebchatID())){
+                    isMe = "1";
+                }
+                number++;
+            }
+
+        }
+        result.put("number", number.toString());
+        result.put("thisFloorUpvoteIsMe", isMe);
+        return result;
+    }
+
+    public String handleContextNewline(String context){
         String N = "\n";
         //String RN = "\r\n";
         int subInt ;
@@ -189,7 +240,7 @@ public class BbsServiceImpl implements BbsService {
       //
 
             nextString = N;
-            subInt = 2;
+            subInt = 1;
 
         int indexStart = 0;
         int indexRN = context.indexOf(nextString, indexStart);
@@ -302,6 +353,40 @@ public class BbsServiceImpl implements BbsService {
         return outStream.toByteArray();
     }
 
+    public Map getTopAllByNumber(String number){
+        Map<String, Object> result = new HashMap<String, Object>();
+        List resultList = new ArrayList<TopAll>();
+        Map<String, List<TopAll>> topAllMap = getTopAll();
+
+        List<TopAll> listTopAll = topAllMap.get("topAll");
+        try {
+            int numberInt = Integer.parseInt(number);
+            int start = numberInt*5 -4;
+            int end = numberInt*5;
+            if (end > listTopAll.size()){
+                end = listTopAll.size();
+            }
+            for (int i=start-1; i<end; i++){
+                TopAll topAll = listTopAll.get(i);
+                topAll.setId(i+1);
+                Map<String, List<BbsContext>> mapBbsContext = getBbsContext(topAll.getHref(), "0");
+                List<BbsContext> BbsContextList = new ArrayList<BbsContext>();
+                BbsContextList = mapBbsContext.get("context");
+                topAll.setAuthor(BbsContextList.get(0).getThisAuthor());
+                topAll.setReplyNumber(String.valueOf(BbsContextList.size()));
+                topAll.setUpvoteNumber(String.valueOf(upvoteMapper.selectUpvoteByTopicID(topAll.getHref()).size()));
+                resultList.add(topAll);
+            }
+
+           // listTopAll.get()
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        result.put("topAll", resultList);
+        return result;
+    }
     public Map getTopAll(){
         Map<String, Object> result = new HashMap<String, Object>();
         Document doc = null;
@@ -309,7 +394,7 @@ public class BbsServiceImpl implements BbsService {
             doc = Jsoup.connect("http://bbs.nju.edu.cn/bbstopall").get();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.print("&&&&&" + e.getMessage());
+            //System.out.print("&&&&&" + e.getMessage());
         }
         Elements trs = doc.select("table").select("tr");
         List resultList = new ArrayList<TopAll>();
@@ -318,7 +403,7 @@ public class BbsServiceImpl implements BbsService {
             if (i == 0) {
                 continue;
             }
-            System.out.println(tds);
+            //System.out.println(tds);
 
             for (int j = 0; j < tds.size(); j++) {
 
@@ -338,10 +423,13 @@ public class BbsServiceImpl implements BbsService {
                     if (mKey.find()) {
                         //System.out.print(mKey.group(1).replace(";", "&"));
                         href = "http://bbs.nju.edu.cn/" + mKey.group(1).replace(";", "&");
+
                         int start = href.indexOf("?");
                         //top10.setHref(href.substring(start + 1));
                         topAll.setHref(href.substring(start + 1));
+
                     }
+                    //topAll.setUpvoteNumber(String.valueOf(upvoteMapper.selectUpvoteByTopicID(topAll.getHref()).size()));
                     resultList.add(topAll);
                 }
                 //System.out.println(text);
@@ -458,6 +546,21 @@ public class BbsServiceImpl implements BbsService {
         }
 
         return text.substring(startIndex).substring(beginTag.length(), endIndex).trim();
+    }
+
+    public Map addUpvote(Upvote upvoteRequest){
+        Map<String, Object> result = new HashMap<String, Object>();
+        Upvote upvoteReturn = upvoteMapper.selectUpvoteByWebchatIdAndTopicIdAndFloorID(upvoteRequest.getWebchatID(), upvoteRequest.getTopicID(), upvoteRequest.getFloorID());
+
+        if (upvoteReturn == null){
+            upvoteMapper.insert(upvoteRequest);
+            result.put("Upvote", "1");
+            return result;
+        }else {
+            upvoteMapper.deleteUpvoteByWebchatIdAndTopicIdAndFloorID(upvoteRequest.getWebchatID(), upvoteRequest.getTopicID(), upvoteRequest.getFloorID());
+            result.put("Upvote", "0");
+            return result;
+        }
     }
 }
 
